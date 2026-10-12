@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#17364c">
+<title>北埔消防分隊｜職業安全衛生互動教材</title>
+<style>
+:root{--navy:#17364c;--blue:#24617a;--teal:#4e9a88;--bg:#f3f6f8;--card:#fff;--ink:#20313b;--muted:#647580;--line:#dbe3e8;--soft:#eaf2f5}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Noto Sans TC","Microsoft JhengHei",sans-serif;line-height:1.75}
+.wrap{max-width:980px;margin:auto;padding:20px}.hero{background:linear-gradient(130deg,var(--navy),var(--blue));color:white;padding:30px 26px;border-radius:18px;box-shadow:0 8px 24px #18394c18}
+.tag{display:inline-block;border:1px solid #a6cbd8;border-radius:30px;padding:3px 11px;font-size:13px}.hero h1{font-size:clamp(25px,5vw,36px);line-height:1.3;margin:12px 0}.hero p{margin:8px 0 0;color:#e3f0f5}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:19px;margin-top:14px;box-shadow:0 2px 8px #20313b08}
+h2{font-size:22px;margin:0 0 8px}h3{font-size:18px;margin:0 0 8px}h4{font-size:16px;margin:13px 0 5px}
+.muted{color:var(--muted)}.small{font-size:13px}.nav{display:flex;flex-wrap:wrap;gap:8px;margin:15px 0}
+button{font:inherit;cursor:pointer;border-radius:10px;padding:9px 13px;border:1px solid var(--line);background:white;color:var(--ink)}
+button:focus-visible,input:focus-visible{outline:3px solid #8fc4d7;outline-offset:2px}
+.nav button.active,.primary{background:var(--blue);color:white;border-color:var(--blue);font-weight:700}
+.nav button{font-size:14px}.primary{padding:10px 16px}.secondary{background:white}
+.progress-head{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-weight:700}
+.bar{height:8px;background:var(--line);border-radius:9px;overflow:hidden;margin:9px 0}.bar>div{height:100%;width:0;background:var(--teal);transition:width .2s}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:13px 0}.tile{padding:14px;border-radius:12px;background:var(--soft)}.num{font-size:24px;font-weight:800}
+.qopt{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:10px;padding:11px;margin:8px 0;cursor:pointer}.qopt:has(input:checked){border-color:#4389a1;background:#f0f7f9}.qopt input{margin-top:7px;accent-color:var(--blue)}
+.feedback{padding:12px;border-radius:10px;background:var(--soft);margin-top:10px}.actions{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:16px}
+footer{text-align:center;color:var(--muted);font-size:13px;padding:24px 10px}
+ul{padding-left:23px}li{margin:5px 0}.tagline{font-weight:800;color:var(--blue)}
+@media(max-width:600px){.wrap{padding:12px}.hero{padding:23px 18px}.panel{padding:14px}.grid{grid-template-columns:1fr}.nav{gap:6px}.nav button{flex:1 1 auto}}
+@media print{body{background:white}.nav,.actions,button{display:none!important}.panel,.hero{box-shadow:none;break-inside:avoid}.wrap{max-width:none;padding:0}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="hero">
+  <span class="tag">消防職業安全衛生｜互動學習課程</span>
+  <h1>安全出勤・平安歸來</h1>
+  <div>新竹縣政府消防局第四大隊北埔分隊</div>
+  <p>從廳舍環境、勤務壓力到救災現場風險，建立辨識危害、適當應變及主動通報的安全習慣。</p>
+</header>
+<section class="panel">
+  <div class="progress-head"><span>學習進度</span><span id="progress-label">已完成 0 / 5 個單元</span></div>
+  <div class="bar"><div id="progress"></div></div>
+  <div class="small muted">建議學習時間：約 15–20 分鐘。完成各單元後，再進行課後測驗。</div>
+</section>
+<nav class="nav" id="nav" aria-label="教材單元">
+  <button class="active" data-tab="0">課程首頁</button><button data-tab="1">環境品質</button><button data-tab="2">壓力管理</button><button data-tab="3">危害辨識</button><button data-tab="4">安全衛生教育</button><button data-tab="5">健康管理</button><button data-tab="6">課後測驗</button>
+</nav>
+<main id="content" aria-live="polite"></main>
+<section class="panel small muted"><strong>教材使用提醒</strong><br>本教材為教育訓練用途，依提供之北埔分隊職安訪視文章編製。實際作業應遵循消防局規定、現場指揮及適用的職業安全衛生規範；教材內容不取代正式程序、專業評估或緊急醫療處置。</section>
+<footer>北埔消防分隊職業安全衛生互動教材｜安全出勤・平安歸來</footer>
+</div>
+<script>
+(function(){
+const content=document.getElementById('content'), nav=[...document.querySelectorAll('[data-tab]')];
+const completed=new Set();let answers={},submitted=false;
+const modules=[
+{title:'課程首頁',body:`<h2>學習目標</h2><p>消防人員經常面對突發任務、環境變化及高強度工作。職安不只是裝備檢查，也包括休息品質、心理支持與健康管理。</p>
+<div class="grid"><div class="tile"><div class="num">01</div><strong>環境品質</strong><div class="small muted">空氣、噪音、照明、通風</div></div><div class="tile"><div class="num">02</div><strong>壓力管理</strong><div class="small muted">勤務、突發任務、睡眠、支持</div></div><div class="tile"><div class="num">03</div><strong>危害辨識</strong><div class="small muted">發現、評估、控制、通報</div></div><div class="tile"><div class="num">04</div><strong>安全與健康</strong><div class="small muted">教育訓練、健康追蹤</div></div></div><h3>開始前，先想一想</h3><p>如果你在備勤空間聞到異味、發現地面濕滑，或連續勤務後精神不濟，應該怎麼做？</p><p><strong>核心原則：發現問題、先確保安全、立即反映、追蹤改善。</strong></p>`},
+{title:'單元一｜環境品質',body:`<h2>打造安全、舒適的備勤環境</h2><p>工作安全環境需要持續檢查及改善。本單元聚焦空氣品質、噪音、照明及通風。</p><div class="panel"><h3>空氣品質</h3><ul><li>留意異味、煙霧、粉塵及可能的廢氣來源。</li><li>依規定維持空間清潔與適當通風。</li><li>如懷疑一氧化碳或其他有害氣體，應立即撤離危險區域、通報並由合適人員檢測，不可只依氣味判斷。</li></ul></div><div class="panel"><h3>噪音與照明</h3><ul><li>注意警報器、機械設備或其他持續性噪音對休息及溝通的影響。</li><li>確認走道、樓梯、器材區及作業位置照明足夠。</li><li>發現燈具損壞、眩光或視線死角時，應反映修復或調整。</li></ul></div><div class="panel"><h3>通風與整潔</h3><ul><li>勿任意阻擋通風口或逃生動線。</li><li>保持地面乾燥，清除障礙物並妥善收納器材。</li><li>污染裝備及清潔用品依規範分區處理、存放。</li></ul></div><h3>情境練習</h3><p>你發現器材區地面積水，旁邊又有電器延長線。下列哪個作法較恰當？</p><div id="scene-options"><label class="qopt"><input type="radio" name="scene" value="a">直接踩過去清理並拔插頭。</label><label class="qopt"><input type="radio" name="scene" value="b">避免接近危險區，通報並依安全程序處理電氣及積水風險。</label><label class="qopt"><input type="radio" name="scene" value="c">先拍照，等下班再反映。</label></div><button class="primary" id="scene-check">確認答案</button><div id="scene-feedback"></div>`},
+{title:'單元二｜壓力管理',body:`<h2>四大勤務壓力管理因子</h2><p>訪視文章提出勤務時間、突發任務、睡眠問題及情緒支持四大因子。壓力管理是個人、同儕與組織共同的責任。</p><div class="panel"><h3>勤務時間</h3><ul><li>合理安排勤務與工作分配，依規定落實休息及交接。</li><li>若工作負荷持續偏高，應向主管反映並討論可行的調整方式。</li></ul></div><div class="panel"><h3>突發任務</h3><ul><li>出勤前掌握已知資訊、任務分工及安全提醒。</li><li>任務中保持通訊與情勢回報；情勢改變時重新評估風險。</li></ul></div><div class="panel"><h3>睡眠問題</h3><ul><li>在勤務允許下爭取休息，維持適當的睡眠習慣。</li><li>若疲勞已影響警覺、判斷或操作，應立即告知主管並評估安全替代安排。</li></ul></div><div class="panel"><h3>情緒支持</h3><ul><li>同仁之間主動關心，尊重個人意願與隱私。</li><li>重大或高壓事件後，可依需要尋求主管、專業心理支持或員工協助資源。</li><li>持續的情緒困擾不必獨自承擔，及早尋求協助。</li></ul></div><h3>情境判斷</h3><p>同仁在連續勤務後明顯疲勞，卻擔心提出來會被認為不夠積極。你會怎麼做？</p><div id="pressure-options"><label class="qopt"><input type="radio" name="pressure" value="a">勸他忍耐，完成勤務後再說。</label><label class="qopt"><input type="radio" name="pressure" value="b">鼓勵他立即向主管反映疲勞狀況，依勤務與安全規範評估休息或工作安排。</label><label class="qopt"><input type="radio" name="pressure" value="c">直接在群組公開討論他的身心狀況。</label></div><button class="primary" id="pressure-check">確認答案</button><div id="pressure-feedback"></div>`},
+{title:'單元三｜潛在危害辨識',body:`<h2>風險辨識四步驟</h2><div class="panel"><h3>第一步：發現危害</h3><p>觀察現場環境、設備、動線、個人狀態及可能的暴露來源。</p></div><div class="panel"><h3>第二步：評估風險</h3><p>考量危害發生的可能性、可能造成的傷害，以及現場情勢是否正在改變。</p></div><div class="panel"><h3>第三步：採取控制措施</h3><p>依危害情況採取隔離、移除危害、工程控制、作業管理或適當個人防護措施。不可只依賴個人防護具取代所有控制措施。</p></div><div class="panel"><h3>第四步：通報及追蹤</h3><p>依程序通報主管或職安權責人員，記錄問題、改善措施與後續確認結果。</p></div><h3>常見風險檢查表</h3><p class="muted small">勾選你已檢查或已確認處理的項目；這是本次學習紀錄，不代表現場已經通過正式檢查。</p><div id="checklist"><label class="qopt"><input type="checkbox">走道、樓梯及出口沒有被雜物阻擋。</label><label class="qopt"><input type="checkbox">地面無明顯積水，電線與電器無可見異常。</label><label class="qopt"><input type="checkbox">消防裝備、器材及車輛依規定檢查。</label><label class="qopt"><input type="checkbox">人員了解作業風險、通訊方式及必要防護。</label><label class="qopt"><input type="checkbox">發現的缺失已通報並安排追蹤。</label></div><div id="check-count" class="small muted">已確認 0 / 5 項</div><button class="secondary" id="check-reset">重設勾選</button><div class="feedback"><strong>注意：</strong>救災現場應持續進行動態風險評估。若出現立即危險，應依現場指揮及安全程序採取保護措施，不可為完成檢查而延誤撤離或求援。</div>`},
+{title:'單元四｜安全衛生教育',body:`<h2>把安全要求落實到每日工作</h2><p>職安教育訓練應與實際任務結合，協助同仁了解危害、正確操作、使用防護裝備及通報異常。</p><div class="panel"><h3>出勤前</h3><ul><li>確認個人防護裝備與任務需求相符，並檢查裝備是否有異常。</li><li>掌握任務資訊、分工、通訊方式及已知危害。</li><li>評估自身身體狀況及疲勞程度，發現疑慮及時反映。</li></ul></div><div class="panel"><h3>勤務中</h3><ul><li>遵循指揮及標準作業程序，不擅自採取超出訓練或裝備能力的作法。</li><li>發現裝備故障、危害擴大或通訊中斷時，立即回報並依程序處置。</li><li>保持隊員間聯繫，注意環境變化與撤退條件。</li></ul></div><div class="panel"><h3>勤務後</h3><ul><li>依規範清潔、檢查、保養及歸位器材。</li><li>污染裝備依程序處理，避免污染擴散至休息區。</li><li>回報裝備故障、虛驚事件、受傷及需要追蹤改善的缺失。</li></ul></div><div class="feedback"><strong>安全教育的重點</strong><p>教育訓練不能只簽到。應確認同仁理解作業風險、能正確操作，並在適當情境下實際演練及檢視成效。</p><strong>討論題</strong><p>若發現同仁使用方式不正確，建議先確認現場安全，再適時提醒、依程序停止不安全操作，協助矯正並視需要安排複訓或通報。</p></div>`},
+{title:'單元五｜健康管理',body:`<h2>從健康檢查到持續追蹤</h2><p>健康管理不是只有體檢當天，而是透過適當檢查、風險評估、健康諮詢及後續追蹤，及早發現需要處理的問題。</p><div class="panel"><h3>健康檢查與追蹤</h3><ul><li>依規定參與健康檢查，並了解個人檢查結果及後續建議。</li><li>需要複檢、就醫或工作調整時，依專業建議及相關程序辦理。</li><li>個人健康資料應依規定妥善保護，不任意公開或散布。</li></ul></div><div class="panel"><h3>事件與原因分析</h3><ul><li>對受傷、暴露、裝備異常、虛驚事件及不安全狀況進行適當紀錄。</li><li>分析事件原因時，不只關注個人行為，也檢視設備、環境、流程、訓練及管理因素。</li><li>改善後確認措施是否有效，必要時修訂程序並安排教育訓練。</li></ul></div><div class="panel"><h3>同儕支持</h3><ul><li>關心同仁是否出現持續疲勞、睡眠困擾或明顯壓力。</li><li>以尊重、保密及非責備方式提供支持。</li><li>若有急迫的身心安全疑慮，應立即依適當程序尋求專業協助。</li></ul></div><h3>本單元自我檢視</h3><div id="health-check"><label class="qopt"><input type="checkbox">我知道如何依規定安排健康檢查與後續追蹤。</label><label class="qopt"><input type="checkbox">我了解健康資料與同仁隱私需要受到保護。</label><label class="qopt"><input type="checkbox">我知道遇到職安問題或身心困擾時，可向適當管道求助。</label></div>`}
+];
+const quiz=[
+{q:'發現備勤區疑似有害氣體，正確的第一步是什麼？',o:['先打開電風扇，繼續工作','立即離開可能受影響區域，通報並依程序安排專業檢測','只要沒有明顯氣味，就可以忽略'],a:1,e:'疑似有害氣體時，不應依氣味判斷安全性。應先確保人員安全、通報並依程序處理。'},
+{q:'哪一項不是勤務壓力管理的四大因子？',o:['勤務時間','突發任務','制服顏色'],a:2,e:'四大因子為勤務時間、突發任務、睡眠問題及情緒支持。'},
+{q:'連續勤務後精神不濟，應如何處理？',o:['隱瞞疲勞以免影響同仁觀感','告知主管，依勤務狀況與安全規範評估適當安排','自行喝大量提神飲料後不必再評估'],a:1,e:'疲勞可能影響警覺與判斷。及時反映並評估安全安排，較能降低風險。'},
+{q:'發現走道積水且附近有電線，較恰當的處理方式是？',o:['立即踩過去清理','先注意電氣風險、避免接觸危險區域，通報並依安全程序處理','用濕拖把直接清潔所有電器周邊'],a:1,e:'應先避免接觸可能帶電的濕區，並依程序隔離危險、通報及安排安全處理。'},
+{q:'職安危害改善後，還應做什麼？',o:['不必記錄，改善一次即可','確認改善措施有效，必要時追蹤並更新相關作業方式','只要口頭提醒過就算完成'],a:1,e:'追蹤改善成效有助於確認危害是否真正降低，並避免同類問題再次發生。'},
+{q:'健康管理與同仁情緒支持，哪一項較適當？',o:['將同仁健康情況公開給全隊討論','尊重隱私，依需要提供適當支持與專業資源','只有發生重大事故才能尋求協助'],a:1,e:'應保護個人資料，並在有需要時及早尋求適當協助。'}
+];
+function updateProgress(){document.getElementById('progress').style.width=(completed.size/5*100)+'%';document.getElementById('progress-label').textContent='已完成 '+completed.size+' / 5 個單元'}
+function mark(n){if(n>0&&n<6)completed.add(n);updateProgress()}
+function showTab(n){
+nav.forEach((b,i)=>b.classList.toggle('active',i===n));
+if(n===6){showQuiz();return}
+content.innerHTML=modules[n].body;
+const actions=document.createElement('div');actions.className='actions';actions.innerHTML='<button class="secondary" id="prev" '+(n===0?'disabled':'')+'>上一單元</button><button class="primary" id="next">'+(n===5?'完成課程並進行測驗':n===0?'開始第一單元':'完成本單元，繼續')+'</button>';content.appendChild(actions);
+actions.querySelector('#prev').onclick=()=>showTab(Math.max(0,n-1));
+actions.querySelector('#next').onclick=()=>{if(n>0)mark(n);if(n===5){mark(5);showTab(6)}else showTab(n+1)};
+if(n===1)content.querySelector('#scene-check').onclick=()=>{const v=content.querySelector('input[name="scene"]:checked'),f=content.querySelector('#scene-feedback');f.className='feedback';f.textContent=!v?'請先選擇答案。':v.value==='b'?'回答正確！應先避免電氣危險，通報並依程序處理。':'再想一想：應優先避免接觸可能帶電的濕區。'};
+if(n===2)content.querySelector('#pressure-check').onclick=()=>{const v=content.querySelector('input[name="pressure"]:checked'),f=content.querySelector('#pressure-feedback');f.className='feedback';f.textContent=!v?'請先選擇答案。':v.value==='b'?'回答正確！疲勞與勤務安全有關，應及時反映並尊重個人隱私。':'建議重新思考：應及時反映疲勞並尊重同仁隱私。'};
+if(n===3){const c=[...content.querySelectorAll('#checklist input')],label=content.querySelector('#check-count'),update=()=>label.textContent='已確認 '+c.filter(x=>x.checked).length+' / 5 項';c.forEach(x=>x.onchange=update);content.querySelector('#check-reset').onclick=()=>{c.forEach(x=>x.checked=false);update()}}
+}
+function showQuiz(){
+let html='<h2>課後測驗</h2><p>共 6 題，請選出最適當的答案。送出後即可查看分數及每題解析。</p>';
+if(completed.size<5)html+='<div class="feedback">建議先完成五個學習單元。目前完成 '+completed.size+' / 5 個單元。</div>';
+quiz.forEach((q,i)=>{html+='<div class="panel"><h3>第 '+(i+1)+' 題｜'+q.q+'</h3>';q.o.forEach((o,j)=>html+='<label class="qopt"><input type="radio" name="quiz-'+i+'" value="'+j+'" '+(answers[i]===j?'checked':'')+' '+(submitted?'disabled':'')+'>'+String.fromCharCode(65+j)+'. '+o+'</label>');if(submitted)html+='<div class="feedback"><strong>'+(answers[i]===q.a?'答對':'答錯或未作答')+'：</strong>'+q.e+'</div>';html+='</div>'});
+if(!submitted)html+='<button class="primary" id="submit" style="width:100%;margin-top:14px">送出答案並計分</button>';else{const score=quiz.filter((q,i)=>answers[i]===q.a).length;html+='<div class="panel" style="text-align:center"><div class="muted small">本次測驗成績</div><div style="font-size:40px;font-weight:850">'+score+' / '+quiz.length+'</div><strong>'+(score>=5?'表現良好，請持續落實職安觀念。':score>=4?'已掌握部分重點，建議複習答錯題目。':'建議重新閱讀相關單元，再進行複習。')+'</strong><p><button class="primary" id="retry">重新測驗</button></p></div>'}
+content.innerHTML=html;
+if(!submitted){quiz.forEach((q,i)=>content.querySelectorAll('input[name="quiz-'+i+'"]').forEach(x=>x.onchange=()=>answers[i]=Number(x.value)));content.querySelector('#submit').onclick=()=>{const missing=quiz.findIndex((q,i)=>answers[i]===undefined);if(missing!==-1){alert('尚有題目未作答，請完成第 '+(missing+1)+' 題。');return}submitted=true;showQuiz()}}else content.querySelector('#retry').onclick=()=>{answers={};submitted=false;showQuiz()};
+}
+nav.forEach(b=>b.addEventListener('click',()=>showTab(Number(b.dataset.tab))));
+showTab(0);
+})();
+</script>
+</body>
+</html>
